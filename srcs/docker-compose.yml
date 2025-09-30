@@ -1,0 +1,11 @@
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: ./containers/nginx
+    ports:
+      - "443:443"
+
+  wordpress:
+    container_name: wordpress
+    build: ./containers/wordpress
