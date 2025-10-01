@@ -12,6 +12,7 @@ services:
     restart: unless-stopped
     depends_on:
       - wordpress
+
   wordpress:
     container_name: wordpress
     build:
@@ -24,8 +25,7 @@ services:
     networks:
       - inception-net
     depends_on:
-      mariadb:
-        condition: service_healthy
+      - mariadb
 
   mariadb:
     container_name: mariadb
@@ -35,14 +35,9 @@ services:
       - /home/fdi-cecc/data/db:/var/lib/mysql
     restart: unless-stopped
     env_file:
-      - .env 
+      - .env
     networks:
       - inception-net
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 5s
-      retries: 10
-      start_period: 30s
 
 networks:
   inception-net:
