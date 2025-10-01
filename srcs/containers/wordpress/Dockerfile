@@ -7,8 +7,8 @@ RUN apk update && apk add --no-cache \
     wget
 
 COPY www.conf /etc/php82/php-fpm.d/
-COPY setup-wp.sh /usr/local/bin/setup-wp.sh
-RUN chmod +x /usr/local/bin/setup-wp.sh
+COPY setup-wp.sh /usr/local/bin/init-wp.sh
+RUN chmod +x /usr/local/bin/init-wp.sh
 
 CMD ["/usr/local/bin/init-wp.sh"]
 
