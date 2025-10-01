@@ -35,5 +35,5 @@ else
     echo "Database already initialized."
 fi
 
-# Start the server in the foreground and listen on all network interfaces
-exec /usr/bin/mysqld --user=mysql --bind-address=0.0.0.0
+# Start the server in the foreground using the configuration file
+exec /usr/bin/mysqld --defaults-file=/etc/my.cnf --user=mysql
