@@ -10,7 +10,8 @@ services:
     networks:
       - inception-net
     restart: unless-stopped
-
+    depends_on:
+      - wordpress
   wordpress:
     container_name: wordpress
     build:
