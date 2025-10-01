@@ -7,6 +7,8 @@ services:
       - "443:443"
     volumes:
       - /home/fdi-cecc/data/wordpress:/var/www/html
+    networks:
+      - inception-net
     restart: unless-stopped
 
   wordpress:
@@ -17,7 +19,9 @@ services:
       - /home/fdi-cecc/data/wordpress:/var/www/html
     restart: unless-stopped
     env_file:
-      - .env 
+      - .env
+    networks:
+      - inception-net
 
   mariadb:
     container_name: mariadb
@@ -28,3 +32,9 @@ services:
     restart: unless-stopped
     env_file:
       - .env 
+    networks:
+      - inception-net
+
+networks:
+  inception-net:
+    driver: bridge
