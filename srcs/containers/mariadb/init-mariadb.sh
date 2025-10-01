@@ -36,10 +36,13 @@ EOF
 else
     echo "Database already initialized."
     
-    # Even if database exists, ensure user permissions are correct
+    # Even if database exists, ensure database and user permissions are correct
     /usr/bin/mysqld --user=mysql --bootstrap << EOF
 USE mysql;
 FLUSH PRIVILEGES;
+
+-- Ensure the database exists
+CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
 
 -- Ensure the user exists and has proper permissions
 CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
