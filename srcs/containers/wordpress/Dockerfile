@@ -4,6 +4,10 @@ RUN apk update && apk add --no-cache \
     php82-fpm \
     php82-mysqli \
     php82-cli \
+    php82-phar \
+    php82-mbstring \
+    php82-curl \
+    php82-json \
     mariadb-client \
     wget
 
