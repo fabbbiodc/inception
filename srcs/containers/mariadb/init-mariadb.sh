@@ -10,7 +10,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
     # Use mysql_install_db and specify the user and data directory
     mysql_install_db --user=mysql --datadir=/var/lib/mysql
 
-    # Start the server in the background to perform initial setup
+    # Start the server in bootstrap mode to perform initial setup
     /usr/bin/mysqld --user=mysql --bootstrap << EOF
 -- These commands are run by the server on initial startup
 USE mysql;
@@ -35,5 +35,5 @@ else
     echo "Database already initialized."
 fi
 
-# Start the server in the foreground
-exec /usr/bin/mysqld --user=mysql
+# Start the server in the foreground and listen on all network interfaces
+exec /usr/bin/mysqld --user=mysql --bind-address=0.0.0.0
