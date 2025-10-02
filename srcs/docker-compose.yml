@@ -2,7 +2,7 @@ services:
   nginx:
     container_name: nginx
     build:
-      context: ./containers/nginx
+      context: ./requirements/nginx
     ports:
       - "443:443"
     volumes:
@@ -16,7 +16,7 @@ services:
   wordpress:
     container_name: wordpress
     build:
-      context: ./containers/wordpress
+      context: ./requirements/wordpress
     volumes:
       - /home/fdi-cecc/data/wordpress:/var/www/html
     restart: unless-stopped
@@ -30,7 +30,7 @@ services:
   mariadb:
     container_name: mariadb
     build:
-      context: ./containers/mariadb
+      context: ./requirements/mariadb
     volumes:
       - /home/fdi-cecc/data/db:/var/lib/mysql
     restart: unless-stopped
