@@ -4,4 +4,4 @@ RUN apk update && apk add --no-cache mariadb mariadb-client
 
 EXPOSE 3306
 
-CMD [ "/bin/true" ]
+CMD ["tail", "-f", "/dev/null"]
