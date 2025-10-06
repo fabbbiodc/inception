@@ -1,13 +1,22 @@
 FROM alpine:3.21
 
-RUN apk update && apk add --no-cache php83-fpm php83-mysqli
+RUN apk update && apk add --no-cache \
+    curl \
+    php83-fpm \
+    php83-mysqli \
+    php83-phar
+
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+    chmod +x wp-cli.phar && \
+    mv wp-cli.phar /usr/local/bin/wp
 
 COPY ./conf/www.conf /etc/php83/php-fpm.d/www.conf
 
-RUN mkdir -p /var/www/html
-
-COPY ./tools/index.html /var/www/html/index.html
+COPY ./tools/wp-init.sh /usr/local/bin/wp-init.sh
+RUN chmod +x /usr/local/bin/wp-init.sh
 
 EXPOSE 9000
+
+ENTRYPOINT [ "wp-init.sh" ]
 
 CMD [ "php-fpm83", "-F" ]
