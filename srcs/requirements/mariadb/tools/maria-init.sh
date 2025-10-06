@@ -1,0 +1,47 @@
+#!/bin/sh
+
+set -e
+
+DATADIR="/var/lib/mysql"
+
+if [ -d "$DATADIR/mysql" ]; then
+	echo "Database already initialized."
+else
+	echo "Database not found, initializing."
+
+	mysql_install_db --user=mysql --datadir="$DATADIR"
+
+	mysqld --user=mysql --datadir="$DATADIR" & pid="$!"
+
+	for i in {30..0}; do
+		if mysqladmin ping -h"localhost" --silent; then
+			break
+		fi
+		echo 'MariaDB starting...'
+		sleep 1
+	done
+	
+	if [ "$i" -eq 0 ]; then
+		echo >&2 'MariaDB startup failed.'
+		exit 1
+	fi
+
+	mysql -u root <<-EOF
+		CREATE DATABASE IF NOT EXISTS \`$DB_NAME\`;
+		CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD';
+		GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'%';
+		ALTER USER 'root'@'localhost' IDENTIFIED BY '$DB_ROOT_PASSWORD';
+		FLUSH PRIVILEGES;
+	EOF
+
+	if ! kill -s TERM "$pid" || ! wait "$pid"; then
+		echo >&2 'MariaDB shutdown failed.'
+		exit 1
+	fi
+	
+	echo "Database initialization complete."
+fi
+
+echo "Starting MariaDB server for connections..."
+
+exec "$@"
