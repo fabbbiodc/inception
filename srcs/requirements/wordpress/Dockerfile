@@ -5,7 +5,8 @@ RUN apk update && apk add --no-cache \
     php83-fpm \
     php83-mysqli \
     php83-phar \
-    mariadb-client
+    mariadb-client \
+    netcat-openbsd
 
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     chmod +x wp-cli.phar && \
