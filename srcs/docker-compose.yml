@@ -48,10 +48,10 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '~/data/db_data'
+      device: '/home/fdi-cecc/data/db_data'
   wp_data:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '~/data/wp_data'
+      device: '/home/fdi-cecc/data/wp_data'
