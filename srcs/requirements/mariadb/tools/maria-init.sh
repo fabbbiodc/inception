@@ -9,12 +9,12 @@ if [ -d "$DATADIR/mysql" ]; then
 else
 	echo "Database not found, initializing."
 
-	mysql_install_db --user=mysql --datadir="$DATADIR"
+	mariadb-install-db --user=mysql --datadir="$DATADIR"
 
-	mysqld --user=mysql --datadir="$DATADIR" & pid="$!"
+	mariadbd --user=mysql --datadir="$DATADIR" --bind-address=0.0.0.0 & pid="$!"
 
 	for i in {30..0}; do
-		if mysqladmin ping -h"localhost" --silent; then
+		if mariadb-admin ping -h"localhost" --silent; then
 			break
 		fi
 		echo 'MariaDB starting...'
@@ -26,7 +26,7 @@ else
 		exit 1
 	fi
 
-	mysql -u root <<-EOF
+	mariadb -u root <<-EOF
 		CREATE DATABASE IF NOT EXISTS \`$DB_NAME\`;
 		CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD';
 		GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'%';
