@@ -43,8 +43,10 @@ else
         --allow-root
 
     echo "WordPress installation complete."
+	chown -R nobody:nobody $WEB_ROOT
 
 fi
+
 
 echo "Starting PHP-FPM..."
 
