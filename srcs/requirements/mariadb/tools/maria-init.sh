@@ -11,7 +11,7 @@ else
 
 	mariadb-install-db --user=mysql --datadir="$DATADIR"
 
-	mariadbd --user=mysql --datadir="$DATADIR" & pid="$!"
+	mariadbd --user=mysql --datadir="$DATADIR" --bind-address=0.0.0.0 --port=3306 & pid="$!"
 
 	for i in {30..0}; do
 		if mariadb-admin ping -h"localhost" --silent; then

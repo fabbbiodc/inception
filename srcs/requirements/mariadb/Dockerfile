@@ -12,4 +12,4 @@ EXPOSE 3306
 
 ENTRYPOINT [ "/usr/local/bin/maria-init.sh" ]
 
-CMD ["mariadbd", "--user=mysql"]
+CMD ["mariadbd", "--user=mysql", "--bind-address=0.0.0.0", "--port=3306"]
