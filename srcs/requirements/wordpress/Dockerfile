@@ -1,22 +1,13 @@
-FROM alpine:3.18
+FROM alpine:3.21
 
-RUN apk update && apk add --no-cache \
-    php82-fpm \
-    php82-mysqli \
-    php82-cli \
-    php82-phar \
-    php82-mbstring \
-    php82-curl \
-    php82-json \
-    mariadb-client \
-    wget
+RUN apk update && apk add --no-cache php83-fpm php82-mysqli
 
-# Create symlink for WP-CLI compatibility
-RUN ln -s /usr/bin/php82 /usr/bin/php
+COPY ./conf/www.conf /etc/php83/php-fpm.d/www.conf
 
-COPY www.conf /etc/php82/php-fpm.d/
-COPY init-wp.sh /usr/local/bin/init-wp.sh
-RUN chmod +x /usr/local/bin/init-wp.sh
+RUN mkdir -p /var/www/html
 
-CMD ["/usr/local/bin/init-wp.sh"]
+COPY ./tools/index.html /var/www/html/index.html
 
+EXPOSE 9000
+
+CMD [ "php-fpm83", "-F" ]

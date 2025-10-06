@@ -1,0 +1,44 @@
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: ./requirements/nginx
+    ports:
+      - "443:443"
+    volumes:
+      - /home/fdi-cecc/data/wordpress:/var/www/html
+    networks:
+      - inception-net
+    restart: unless-stopped
+    depends_on:
+      - wordpress
+
+  wordpress:
+    container_name: wordpress
+    build:
+      context: ./requirements/wordpress
+    volumes:
+      - /home/fdi-cecc/data/wordpress:/var/www/html
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - inception-net
+    depends_on:
+      - mariadb
+
+  mariadb:
+    container_name: mariadb
+    build:
+      context: ./requirements/mariadb
+    volumes:
+      - /home/fdi-cecc/data/db:/var/lib/mysql
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - inception-net
+
+networks:
+  inception-net:
+    driver: bridge

@@ -1,13 +1,11 @@
-FROM alpine:3.18
+FROM alpine:3.21
 
-RUN apk update && apk add nginx
+RUN apk update && apk add --no-cache nginx
 
-RUN mkdir -p /run/nginx
-COPY default.conf /etc/nginx/http.d/
+COPY ./conf/default.conf /etc/nginx/http.d/default.conf
 
-RUN mkdir -p /etc/nginx/ssl
+RUN mkdir -p /var/www/html
 
-COPY ./ssl/inception.crt /etc/nginx/ssl/
-COPY ./ssl/inception.key /etc/nginx/ssl/
+EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD [ "nginx", "-g", "daemon off;" ]

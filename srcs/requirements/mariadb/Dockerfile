@@ -1,14 +1,7 @@
-FROM alpine:3.18
+FROM alpine:3.21
 
-RUN apk update && apk add --no-cache mariadb mariadb-client
-
-RUN mkdir -p /run/mysqld /var/log/mysql
-RUN chown -R mysql:mysql /run/mysqld /var/log/mysql
-
-COPY my.cnf /etc/my.cnf
-COPY init-mariadb.sh /usr/local/bin/init-mariadb.sh
-RUN chmod +x /usr/local/bin/init-mariadb.sh
+RUN apk update && apk add --n-cache mariadb mariadb-client
 
 EXPOSE 3306
 
-CMD ["/usr/local/bin/init-mariadb.sh"]
+CMD [ "/bin/true" ]

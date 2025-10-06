@@ -1,27 +1,27 @@
+version: '3.8'
+
 services:
   nginx:
     container_name: nginx
-    build:
-      context: ./requirements/nginx
+    build: ./requirements/nginx
     ports:
-      - "443:443"
+      - "8080:80"
     volumes:
-      - /home/fdi-cecc/data/wordpress:/var/www/html
+      - wp_data:/var/www/html
     networks:
       - inception-net
-    restart: unless-stopped
+    restart: always
     depends_on:
       - wordpress
 
   wordpress:
     container_name: wordpress
-    build:
-      context: ./requirements/wordpress
+    build: ./requirements/wordpress
     volumes:
-      - /home/fdi-cecc/data/wordpress:/var/www/html
-    restart: unless-stopped
-    env_file:
-      - .env
+      - wp_data:/var/www/html
+    restart: always
+    expose:
+      - "9000"
     networks:
       - inception-net
     depends_on:
@@ -29,11 +29,10 @@ services:
 
   mariadb:
     container_name: mariadb
-    build:
-      context: ./requirements/mariadb
+    build: ./requirements/mariadb
     volumes:
-      - /home/fdi-cecc/data/db:/var/lib/mysql
-    restart: unless-stopped
+      - db_data:/var/lib/mysql
+    restart: always
     env_file:
       - .env
     networks:
@@ -42,3 +41,17 @@ services:
 networks:
   inception-net:
     driver: bridge
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '~/data/db_data'
+  wp_data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '~/data/wp_data'
