@@ -2,24 +2,26 @@
 
 set -e
 
+WEB_ROOT=/var/www/html
+
 echo "Waiting for MariaDB to be ready..."
 until nc -z mariadb 3306; do
     echo "MariaDB not ready yet, waiting..."
-    sleep 2
+    sleep 1
 done
 echo "MariaDB is ready."
 
-WEB_ROOT=/var/www/html
-
-if [ -f "$WEB_ROOT/wp-config.php" ]; then
+if wp core is-installed --allow-root --path=$WEB_ROOT; then
     echo "WordPress is already installed."
 else
     echo "WordPress not found. Starting installation..."
 
     mkdir -p $WEB_ROOT
-        cd $WEB_ROOT
+    cd $WEB_ROOT
 
-    wp core download --allow-root
+    if ! wp core is-installed --allow-root; then
+        wp core download --allow-root
+    fi
 
     wp config create \
         --dbname=$DB_NAME \
@@ -45,10 +47,7 @@ else
 
     echo "WordPress installation complete."
 	chown -R nobody:nobody $WEB_ROOT
-
 fi
 
-
 echo "Starting PHP-FPM..."
-
 exec "$@"
