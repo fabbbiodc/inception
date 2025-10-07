@@ -1,8 +1,5 @@
 #!/bin/sh
 
-
-echo "<h1>Static HTML Test Page</h1>" > /var/www/html/index.html
-
 set -e
 
 echo "Waiting for MariaDB to be ready..."
