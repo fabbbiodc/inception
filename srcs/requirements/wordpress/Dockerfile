@@ -15,6 +15,8 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 
 COPY ./conf/www.conf /etc/php83/php-fpm.d/www.conf
 
+COPY ./conf/custom.ini /etc/php83/conf.d/custom.ini
+
 COPY ./tools/wp-init.sh /usr/local/bin/wp-init.sh
 RUN chmod +x /usr/local/bin/wp-init.sh
 
