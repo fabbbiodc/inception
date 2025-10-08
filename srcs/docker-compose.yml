@@ -48,10 +48,10 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/home/fdi-cecc/data/db_data'
+      device: ${VOLUME_PATH}/db_data
   wp_data:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/home/fdi-cecc/data/wp_data'
+      device: ${VOLUME_PATH}/wp_data # TODO change to complete path variables?
