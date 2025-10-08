@@ -20,17 +20,17 @@ else
     cd $WEB_ROOT
 
     if ! wp core is-installed --allow-root; then
-        wp core download --allow-root
+        php -d memory_limit=256M /usr/local/bin/wp core download --allow-root
     fi
 
-    wp config create \
+    php -d memory_limit=256M /usr/local/bin/wp config create \
         --dbname=$DB_NAME \
         --dbuser=$DB_USER \
         --dbpass=$DB_PASSWORD \
         --dbhost=mariadb \
         --allow-root
 
-    wp core install \
+    php -d memory_limit=256M /usr/local/bin/wp core install \
         --url=$DOMAIN_NAME \
         --title="Inception" \
         --admin_user=$WP_ADMIN_USER \
@@ -38,7 +38,7 @@ else
         --admin_email=$WP_ADMIN_EMAIL \
         --allow-root
 
-    wp user create \
+    php -d memory_limit=256M /usr/local/bin/wp user create \
         $WP_USER \
         $WP_USER_EMAIL \
         --role=author \
@@ -46,7 +46,7 @@ else
         --allow-root
 
     echo "WordPress installation complete."
-	chown -R nobody:nobody $WEB_ROOT
+    chown -R nobody:nobody $WEB_ROOT
 fi
 
 echo "Starting PHP-FPM..."
