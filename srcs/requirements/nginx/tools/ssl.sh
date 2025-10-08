@@ -5,17 +5,14 @@ set -e
 CERT_FILE="${CRT_PATH}/inception.crt"
 KEY_FILE="${KEY_PATH}/inception.key"
 
-# Check if the certificate and key already exist
 if [ -f "$CERT_FILE" ] && [ -f "$KEY_FILE" ]; then
     echo "TLS certificate and key already exist. Skipping generation."
 else
     echo "Generating TLS certificate and key..."
 
-    # Create directories if they don't exist
     mkdir -p "$CRT_PATH"
     mkdir -p "$KEY_PATH"
 
-    # Generate the self-signed certificate
     openssl req -x509 \
         -nodes \
         -days 365 \
@@ -27,5 +24,4 @@ else
     echo "TLS certificate and key generated successfully."
 fi
 
-# Execute the main container command (passed as arguments)
 exec "$@" # CHECK
