@@ -2,6 +2,7 @@ FROM alpine:3.21
 
 RUN apk update && apk add --no-cache \
     curl \
+    php83 \
     php83-fpm \
     php83-mysqli \
     php83-json \
@@ -13,6 +14,7 @@ RUN apk update && apk add --no-cache \
     php83-openssl \
     php83-xml \
     php83-zip \
+    php83-phar \
     netcat-openbsd
 
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
@@ -24,7 +26,8 @@ COPY ./tools/wp-init.sh /usr/local/bin/wp-init.sh
 
 RUN chmod +x /usr/local/bin/wp-init.sh
 
-WORKDIR /var/www/html 
+# CHECK
+WORKDIR /var/www/html
 
 EXPOSE 9000
 
