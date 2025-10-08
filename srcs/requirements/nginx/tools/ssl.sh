@@ -28,4 +28,4 @@ else
 fi
 
 # Execute the main container command (passed as arguments)
-# exec "$@" # CHECK
+exec "$@" # CHECK
