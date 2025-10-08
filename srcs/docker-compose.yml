@@ -38,7 +38,7 @@ services:
     env_file:
       - .env
     networks:
-      - inception-net
+      - inception-net # CHECK
 
 networks:
   inception-net:
