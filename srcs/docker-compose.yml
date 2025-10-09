@@ -10,7 +10,7 @@ services:
       - inception-net
     restart: always
     env_file:
-      - .env
+      - .env # TODO check if needed
     depends_on:
       - wordpress
 
