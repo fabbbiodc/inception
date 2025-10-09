@@ -6,7 +6,7 @@
 #    By: fdi-cecc <fdi-cecc@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/06 11:31:41 by fdi-cecc          #+#    #+#              #
-#    Updated: 2025/10/07 12:34:00 by fdi-cecc         ###   ########.fr        #
+#    Updated: 2025/10/09 15:37:52 by fdi-cecc         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ all: up
 up:
 	@mkdir -p ~/data/db_data
 	@mkdir -p ~/data/wp_data
+	@sudo chown -R nobody:nobody ~/data/wp_data ~/data/db_data
 	docker-compose -p $(PROJECT_NAME) -f ./srcs/docker-compose.yml up --build -d
 
 down:
