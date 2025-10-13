@@ -26,7 +26,6 @@ COPY ./tools/wp-init.sh /usr/local/bin/wp-init.sh
 
 RUN chmod +x /usr/local/bin/wp-init.sh
 
-# CHECK
 WORKDIR /var/www/html
 
 EXPOSE 9000
