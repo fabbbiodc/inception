@@ -4,6 +4,8 @@ set -e
 
 DATADIR="/var/lib/mysql"
 
+chown -R mysql:mysql "$DATADIR"
+
 if [ -d "$DATADIR/mysql" ]; then
 	echo "Database already initialized."
 else
