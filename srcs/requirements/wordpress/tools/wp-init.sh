@@ -16,6 +16,10 @@ if wp core is-installed --allow-root --path=$WEB_ROOT; then
 else
     echo "WordPress not found. Starting installation..."
 
+    DB_PASSWORD=$(cat /run/secrets/db_password)
+    WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
+    WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password)
+
     mkdir -p $WEB_ROOT
     cd $WEB_ROOT
 
@@ -26,7 +30,7 @@ else
     php83 -d memory_limit=256M /usr/local/bin/wp config create \
         --dbname=$DB_NAME \
         --dbuser=$DB_USER \
-        --dbpass=$DB_PASSWORD \
+        --dbpass="$DB_PASSWORD" \
         --dbhost=mariadb \
         --allow-root
 
@@ -34,7 +38,7 @@ else
         --url=$DOMAIN_NAME \
         --title="Inception" \
         --admin_user=$WP_ADMIN_USER \
-        --admin_password=$WP_ADMIN_PASSWORD \
+        --admin_password="$WP_ADMIN_PASSWORD" \
         --admin_email=$WP_ADMIN_EMAIL \
         --allow-root
 
@@ -42,7 +46,7 @@ else
         $WP_USER \
         $WP_USER_EMAIL \
         --role=author \
-        --user_pass=$WP_USER_PASSWORD \
+        --user_pass="$WP_USER_PASSWORD" \
         --allow-root
 
     echo "WordPress installation complete."

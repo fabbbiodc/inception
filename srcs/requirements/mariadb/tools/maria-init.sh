@@ -11,8 +11,10 @@ if [ -d "$DATADIR/mysql" ]; then
 else
 	echo "Database not found, initializing."
 
-	mariadb-install-db --user=mysql --datadir="$DATADIR"
+	DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
+	DB_PASSWORD=$(cat /run/secrets/db_password)
 
+	mariadb-install-db --user=mysql --datadir="$DATADIR"
 	mariadbd --user=mysql --datadir="$DATADIR" --bind-address=0.0.0.0 --port=3306 & pid="$!"
 
 	for i in {30..0}; do
@@ -22,7 +24,7 @@ else
 		echo 'MariaDB starting...'
 		sleep 1
 	done
-	
+
 	if [ "$i" -eq 0 ]; then
 		echo >&2 'MariaDB startup failed.'
 		exit 1

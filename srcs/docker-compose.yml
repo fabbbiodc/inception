@@ -10,14 +10,14 @@ services:
       - inception-net
     restart: always
     env_file:
-      - .env # TODO check if needed
+      - .env
     depends_on:
       - wordpress
 
   wordpress:
     container_name: wordpress
     build: ./requirements/wordpress
-    volumes: 
+    volumes:
       - wp_data:/var/www/html
     restart: always
     expose:
@@ -26,6 +26,10 @@ services:
       - inception-net
     env_file:
       - .env
+    secrets:
+      - db_password
+      - wp_admin_password
+      - wp_user_password
     depends_on:
       - mariadb
 
@@ -37,8 +41,21 @@ services:
     restart: always
     env_file:
       - .env
+    secrets:
+      - db_root_password
+      - db_password
     networks:
-      - inception-net # CHECK
+      - inception-net
+
+secrets:
+  db_root_password:
+    file: ./secrets/db_root_password.txt
+  db_password:
+    file: ./secrets/db_password.txt
+  wp_admin_password:
+    file: ./secrets/wp_admin_password.txt
+  wp_user_password:
+    file: ./secrets/wp_user_password.txt
 
 networks:
   inception-net:
@@ -56,4 +73,4 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: ${VOLUME_PATH}/wp_data # TODO change to complete path variables?
+      device: ${VOLUME_PATH}/wp_data
