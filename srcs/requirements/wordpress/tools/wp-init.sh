@@ -11,8 +11,8 @@ until nc -z mariadb 3306; do
 done
 echo "MariaDB is ready."
 
-if wp core is-installed --allow-root --path=$WEB_ROOT; then
-    echo "WordPress is already installed."
+if [ -f "$WEB_ROOT/wp-config.php" ]; then
+    echo "WordPress is already configured."
 else
     echo "WordPress not found. Starting installation..."
 
@@ -23,9 +23,9 @@ else
     mkdir -p $WEB_ROOT
     cd $WEB_ROOT
 
-    # if ! wp core is-installed --allow-root; then
-    #     php83 -d memory_limit=256M /usr/local/bin/wp core download --allow-root
-    # fi
+    if [ ! -f "index.php" ]; then
+        php83 -d memory_limit=256M /usr/local/bin/wp core download --allow-root
+    fi
 
     php83 -d memory_limit=256M /usr/local/bin/wp config create \
         --dbname=$DB_NAME \
@@ -65,9 +65,6 @@ else
 	wp config set WP_REDIS_PREFIX "inception_" --allow-root
 
 	wp redis enable --allow-root
-
-	chown -R www-data:www-data /var/www/html
-
 fi
 
 echo "Starting PHP-FPM..."
