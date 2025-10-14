@@ -24,6 +24,7 @@ services:
       - "9000"
     networks:
       - inception-net
+      - redis-net
     env_file:
       - .env
     secrets:
@@ -32,6 +33,7 @@ services:
       - wp_user_password
     depends_on:
       - mariadb
+      - redis
 
   mariadb:
     container_name: mariadb
@@ -47,6 +49,13 @@ services:
     networks:
       - inception-net
 
+  redis:
+    container_name: redis
+    build: ./requirements/bonus/redis
+    restart: always
+    networks:
+      - redis-net
+   
 secrets:
   db_root_password:
     file: ./secrets/db_root_password.txt
@@ -59,6 +68,8 @@ secrets:
 
 networks:
   inception-net:
+    driver: bridge
+  redis-net:
     driver: bridge
 
 volumes:
