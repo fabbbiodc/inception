@@ -23,9 +23,9 @@ else
     mkdir -p $WEB_ROOT
     cd $WEB_ROOT
 
-    if ! wp core is-installed --allow-root; then
-        php83 -d memory_limit=256M /usr/local/bin/wp core download --allow-root
-    fi
+    # if ! wp core is-installed --allow-root; then
+    #     php83 -d memory_limit=256M /usr/local/bin/wp core download --allow-root
+    # fi
 
     php83 -d memory_limit=256M /usr/local/bin/wp config create \
         --dbname=$DB_NAME \
@@ -51,6 +51,23 @@ else
 
     echo "WordPress installation complete."
     chown -R nobody:nobody $WEB_ROOT
+fi
+
+if wp plugin is-installed redis-cache --allow-root; then
+	echo "Redis Cache already installed."
+else
+	echo "Installing Redis Cache..."
+
+	wp plugin install redis-cache --activate --allow-root
+
+	wp config set WP_REDIS_HOST "redis" --allow-root
+	wp config set WP_REDIS_PORT "6379" --allow-root
+	wp config set WP_REDIS_PREFIX "inception_" --allow-root
+
+	wp redis enable --allow-root
+
+	chown -R www-data:www-data /var/www/html
+
 fi
 
 echo "Starting PHP-FPM..."
