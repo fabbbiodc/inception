@@ -13,7 +13,7 @@ fi
 if [ ! -f "$ADMINER_FILE" ]; then
     echo "Downloading Adminer..."
     curl -L "https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1.php" -o "$ADMINER_FILE"
-    chown -R www-data:www-data "$ADMINER_DIR"
+    chown -R nobody:nobody "$ADMINER_DIR"
     echo "Adminer downloaded successfully."
 else
     echo "Adminer already exists."

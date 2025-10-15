@@ -3,10 +3,10 @@ FROM alpine:3.21
 RUN apk update && apk add --no-cache \
 	curl \
 	php83-fpm \
-	php83-mysqli
+	php83-mysqli \
+	php83-session
 
-# Add www-data user (group already exists in Alpine)
-RUN adduser -u 82 -D -S -G www-data www-data || echo "User www-data already exists"
+RUN rm /etc/php83/php-fpm.d/www.conf
 
 COPY ./conf/adminer.conf /etc/php83/php-fpm.d/adminer.conf
 
