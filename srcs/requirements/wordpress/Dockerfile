@@ -15,7 +15,9 @@ RUN apk update && apk add --no-cache \
     php83-xml \
     php83-zip \
     php83-phar \
-	php83-redis \
+    php83-redis \
+    php83-tokenizer \
+    php83-ctype \
     netcat-openbsd
 
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \

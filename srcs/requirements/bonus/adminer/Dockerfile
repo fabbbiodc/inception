@@ -4,7 +4,8 @@ RUN apk update && apk add --no-cache \
 	curl \
 	php83-fpm \
 	php83-mysqli \
-	php83-session
+	php83-session \
+	netcat-openbsd
 
 RUN rm /etc/php83/php-fpm.d/www.conf
 

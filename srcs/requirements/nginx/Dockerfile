@@ -1,6 +1,6 @@
 FROM alpine:3.21
 
-RUN apk update && apk add --no-cache nginx openssl
+RUN apk update && apk add --no-cache nginx openssl netcat-openbsd
 RUN mkdir -p /var/www/html && \
     chown -R nobody:nobody /var/www/html
 

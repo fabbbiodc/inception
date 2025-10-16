@@ -1,6 +1,6 @@
 FROM alpine:3.21
 
-RUN apk update && apk add --no-cache vsftpd linux-pam shadow
+RUN apk update && apk add --no-cache vsftpd linux-pam shadow netcat-openbsd
 
 COPY ./conf/vsftpd.conf /etc/vsftpd/vsftpd.conf
 COPY ./conf/vsftpd.pam /etc/pam.d/vsftpd

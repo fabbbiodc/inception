@@ -67,5 +67,7 @@ else
 	wp redis enable --allow-root
 fi
 
+chown -R nobody:nobody $WEB_ROOT
+
 echo "Starting PHP-FPM..."
 exec "$@"
