@@ -116,6 +116,8 @@ services:
     secrets:
       - ftp_user
       - ftp_password
+    networks:
+      - inception-net
     depends_on:
       - wordpress
     healthcheck:
