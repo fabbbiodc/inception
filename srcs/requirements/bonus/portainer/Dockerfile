@@ -18,4 +18,4 @@ EXPOSE 8000 9443
 ENTRYPOINT [ "/app/portainer" ]
 
 # Define volume for persistent data
-VOLUME [ "/data" ]
+ENTRYPOINT [ "/app/portainer", "--admin-password-file=/run/secrets/portainer_admin_password" ]
