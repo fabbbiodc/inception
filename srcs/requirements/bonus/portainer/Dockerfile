@@ -14,8 +14,5 @@ RUN curl -L -o portainer.tar.gz "https://github.com/portainer/portainer/releases
 
 EXPOSE 8000 9443
 
-# Set the entrypoint to run Portainer
-ENTRYPOINT [ "/app/portainer" ]
-
 # Define volume for persistent data
 ENTRYPOINT [ "/app/portainer", "--admin-password-file=/run/secrets/portainer_admin_password" ]
