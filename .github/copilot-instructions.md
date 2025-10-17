@@ -1,91 +1,43 @@
-# Inception Project - AI Agent Instructions
+# Copilot Instructions for AI Coding Agents
 
 ## Project Overview
-This is a containerized WordPress web stack implementing the 42 School "Inception" project. It's a multi-service Docker setup with custom configurations, SSL certificates, and comprehensive bonus features.
+This repository is an infrastructure project for multi-service deployment using Docker Compose. It orchestrates several services (nginx, mariadb, wordpress, redis, ftp, portainer, adminer) with custom configurations and initialization scripts. The structure is designed for modularity and clear separation of service responsibilities.
 
-## Architecture
-The stack consists of 6 Docker services in `srcs/docker-compose.yml`:
-- **nginx**: HTTPS-only reverse proxy (port 443) with custom SSL certificates
-- **wordpress**: PHP-FPM backend with WP-CLI automation and Redis caching
-- **mariadb**: Database with automated setup and user provisioning
-- **redis**: Cache backend for WordPress performance (bonus)
-- **adminer**: Database admin interface accessible at `/adminer` (bonus)
-- **ftp**: File transfer server for WordPress content management (bonus)
+## Architecture & Key Components
+- **srcs/docker-compose.yml**: Central orchestration file. Defines all services, networks, and volumes.
+- **srcs/requirements/**: Contains service-specific folders. Each service has:
+  - `Dockerfile`: Defines the build for the service container.
+  - `conf/`: Configuration files (e.g., nginx, mariadb, redis, ftp, wordpress, adminer).
+  - `tools/`: Initialization scripts (e.g., `*-init.sh`, `ssl.sh`).
+- **srcs/secrets/**: Stores credentials and sensitive data as text files. Services read these at startup.
 
-Services communicate through two networks: `inception-net` (main) and `redis-net` (cache isolation).
+## Developer Workflows
+- **Build & Deploy**: Use `docker-compose up --build` from `srcs/` to build and start all services.
+- **Logs**: Use `printlogs.sh` at the project root to aggregate and display logs from all containers.
+- **Secrets Management**: Update files in `srcs/secrets/` to change credentials. These are mounted into containers at runtime.
+- **Makefile**: Provides shortcuts for common operations (build, clean, restart, etc.). Always check for available targets before running manual commands.
 
-## Development Workflow
+## Project-Specific Patterns
+- **Service Isolation**: Each service is self-contained in its own folder under `srcs/requirements/`. Avoid cross-service dependencies except via Docker Compose networking.
+- **Configuration Injection**: All config and secret files are injected via Docker volumes. Do not hardcode credentials in Dockerfiles or scripts.
+- **Initialization Scripts**: Each service may have a `*-init.sh` script in `tools/` for setup tasks. These are run as entrypoints or via Dockerfile `CMD`/`ENTRYPOINT`.
+- **Bonus Services**: Services in `srcs/requirements/bonus/` are optional and may have different startup logic or dependencies.
 
-### Build & Run Commands
-```bash
-make all        # Build and start all services (creates ~/data directories)
-make up         # Start existing containers
-make down       # Stop services
-make clean      # Remove containers, images, volumes
-make vclean     # Full cleanup including ~/data directories
-make re/vre     # Rebuild (with/without volume cleanup)
-```
+## Integration Points
+- **External Access**: Nginx acts as the main entrypoint for HTTP traffic. FTP, Portainer, and Adminer expose their own ports as defined in `docker-compose.yml`.
+- **Database Connections**: WordPress and Adminer connect to MariaDB using credentials from `srcs/secrets/`.
+- **Redis**: Used for caching, connected to by other services as needed.
 
-### Service Dependencies
-- nginx depends on wordpress + adminer
-- wordpress depends on mariadb + redis
-- adminer depends on mariadb
-- ftp depends on wordpress
+## Examples
+- To add a new service, create a new folder under `srcs/requirements/`, add a `Dockerfile`, `conf/`, and `tools/` as needed, then update `docker-compose.yml`.
+- To change the WordPress admin password, update `srcs/secrets/wp_admin_password.txt` and restart the relevant containers.
 
-## Configuration Patterns
+## References
+- **srcs/docker-compose.yml**: Service definitions and networking.
+- **srcs/requirements/**: Service implementations.
+- **srcs/secrets/**: Credentials and secrets.
+- **Makefile**: Workflow automation.
+- **printlogs.sh**: Log aggregation.
 
-### Directory Structure Convention
-Each service follows this pattern:
-```
-requirements/SERVICE_NAME/
-├── Dockerfile              # Alpine-based builds
-├── conf/SERVICE.conf       # Service configuration
-└── tools/SERVICE-init.sh   # Initialization script
-```
-
-### Secrets Management
-All sensitive data is stored in `srcs/secrets/*.txt` files and accessed via Docker secrets at `/run/secrets/FILENAME` within containers. Never hardcode credentials.
-
-### Initialization Scripts Pattern
-All services use idempotent initialization scripts in `tools/` that:
-1. Check if already configured (e.g., `wp-config.php` exists)
-2. Wait for dependencies using `nc -z HOST PORT`
-3. Read secrets from `/run/secrets/`
-4. Perform one-time setup if needed
-5. Execute the main service with `exec "$@"`
-
-## Service-Specific Details
-
-### WordPress (`requirements/wordpress/`)
-- Uses WP-CLI for automated installation and user creation
-- Configures Redis caching automatically
-- Runs PHP 8.3 FPM on port 9000
-- Volume mounted at `/var/www/html`
-
-### Nginx (`requirements/nginx/`)
-- HTTPS-only (TLS 1.2/1.3) with self-signed certificates
-- Proxies PHP requests to wordpress:9000 and adminer:9000
-- Serves `/adminer` path for database admin
-- SSL cert generation in `tools/ssl.sh`
-
-### MariaDB (`requirements/mariadb/`)
-- Initializes database and users only on first run
-- Uses environment variables for DB_NAME, DB_USER
-- Passwords from Docker secrets only
-
-## Environment Variables
-Set in `.env` file (not tracked in git):
-- `DOMAIN_NAME`: Server name for SSL certificates
-- `VOLUME_PATH`: Host path for persistent data (typically ~/data)
-- Database and WordPress configuration variables
-
-## Volume Management
-- `db_data`: MariaDB persistent storage
-- `wp_data`: WordPress files and uploads
-- Both use bind mounts to `${VOLUME_PATH}/` on host
-
-## Troubleshooting
-- Services wait for health checks before proceeding
-- Check `docker-compose logs SERVICE_NAME` for issues
-- Nginx waits for https://DOMAIN_NAME to respond before marking ready
-- All initialization is idempotent - safe to restart
+---
+For questions or unclear patterns, review the referenced files or ask for clarification. Please suggest improvements to these instructions if you find missing or ambiguous guidance.

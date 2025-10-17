@@ -14,6 +14,7 @@ services:
     depends_on:
       - wordpress
       - adminer
+      - portainer
     healthcheck:
       test: ["CMD-SHELL", "nc -z localhost 443 || exit 1"]
       interval: 10s
@@ -124,6 +125,22 @@ services:
       retries: 5
       start_period: 30s
 
+  portainer:
+    container_name: portainer
+    build: ./requirements/bonus/portainer
+    ports:
+      - "9443:9443"
+    volumes:
+      - port_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - ADMIN_PASSWORD_FILE=/run/secrets/portainer_admin_password
+    secrets:
+      - portainer_admin_password
+    restart: always
+    networks:
+      - inception-net
+
 secrets:
   db_root_password:
     file: ./secrets/db_root_password.txt
@@ -137,6 +154,8 @@ secrets:
     file: ./secrets/ftp_user.txt
   ftp_password:
     file: ./secrets/ftp_password.txt
+  portainer_admin_password:
+    file: ./secrets/portainer_admin_password.txt
 
 networks:
   inception-net:
@@ -157,3 +176,9 @@ volumes:
       type: 'none'
       o: 'bind'
       device: ${VOLUME_PATH}/wp_data
+  port_data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ${VOLUME_PATH}/port_data
