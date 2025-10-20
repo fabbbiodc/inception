@@ -33,6 +33,5 @@ WORKDIR /var/www/html
 
 EXPOSE 9000
 
-# TODO put commands into entrypoint
 ENTRYPOINT ["/usr/local/bin/wp-init.sh"]
 CMD ["php-fpm83", "-F"]

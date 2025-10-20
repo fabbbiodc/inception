@@ -19,8 +19,8 @@ if [ ! -d "$DATADIR/mysql" ]; then
     done
     echo "/// [MariaDB is running]"
 
-    DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
-    DB_PASSWORD=$(cat /run/secrets/db_password)
+    DB_ROOT_PASSWORD="${DB_ROOT_PASSWORD}"
+    DB_PASSWORD="${DB_PASSWORD}"
 
     mariadb -u root <<-EOF
         ALTER USER 'root'@'localhost' IDENTIFIED BY '$DB_ROOT_PASSWORD';
