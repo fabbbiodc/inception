@@ -12,9 +12,9 @@ done
 echo "MariaDB is ready."
 
 if [ -f "$WEB_ROOT/wp-config.php" ]; then
-    echo "WordPress is already configured."
+    echo "/// [WordPress is already configured]"
 else
-    echo "WordPress not found. Starting installation..."
+    echo "/// [WordPress not found. Starting installation]"
 
     DB_PASSWORD=$(cat /run/secrets/db_password)
     WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
@@ -49,14 +49,14 @@ else
         --user_pass="$WP_USER_PASSWORD" \
         --allow-root
 
-    echo "WordPress installation complete."
+    echo "/// [WordPress installation complete]"
     chown -R nobody:nobody $WEB_ROOT
 fi
 
 if wp plugin is-installed redis-cache --allow-root; then
-	echo "Redis Cache already installed."
+	echo "/// [Redis Cache already installed]"
 else
-	echo "Installing Redis Cache..."
+	echo "/// [Installing Redis Cache]"
 
 	wp plugin install redis-cache --activate --allow-root
 
@@ -69,5 +69,5 @@ fi
 
 chown -R nobody:nobody $WEB_ROOT
 
-echo "Starting PHP-FPM..."
+echo "/// [Starting PHP-FPM]"
 exec "$@"

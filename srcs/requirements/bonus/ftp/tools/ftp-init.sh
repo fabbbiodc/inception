@@ -14,7 +14,7 @@ if [ -f "$FTP_USER_SECRET_PATH" ] && [ -f "$FTP_PASSWORD_SECRET_PATH" ]; then
         echo "$FTP_USER:$FTP_PASSWORD" | chpasswd
     fi
 else
-    echo "FTP secrets not found. Exiting."
+    echo "/// [FTP secrets not found]"
     exit 1
 fi
 

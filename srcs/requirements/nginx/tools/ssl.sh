@@ -6,9 +6,9 @@ CERT_FILE="${CRT_PATH}/inception.crt"
 KEY_FILE="${KEY_PATH}/inception.key"
 
 if [ -f "$CERT_FILE" ] && [ -f "$KEY_FILE" ]; then
-    echo "TLS certificate and key already exist. Skipping generation."
+    echo "/// [TLS certificate and key already exist. Skipping generation]"
 else
-    echo "Generating TLS certificate and key..."
+    echo "/// [Generating TLS certificate and key]"
 
     mkdir -p "$CRT_PATH"
     mkdir -p "$KEY_PATH"
@@ -21,7 +21,7 @@ else
         -out "$CERT_FILE" \
         -subj "/C=ES/ST=Catalonia/L=Barcelona/O=42/OU=student/CN=${DOMAIN_NAME}"
 		
-    echo "TLS certificate and key generated successfully."
+    echo "/// [TLS certificate and key generated successfully]"
 fi
 
 exec "$@" # CHECK
