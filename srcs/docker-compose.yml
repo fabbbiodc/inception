@@ -108,6 +108,8 @@ services:
     restart: always
     networks:
       - inception-net
+    env_file:
+      - .env
     depends_on:
       - wordpress
     healthcheck:
