@@ -1,56 +1,66 @@
-# Copilot Instructions for AI Agents
+# Copilot Instructions for AI Coding Agents
 
 ## Project Overview
-This repository is an Inception-style multi-service environment using Docker Compose. It orchestrates several services (WordPress, MariaDB, Nginx, Redis, FTP, Adminer, Portainer) for a complete web stack, with each service defined in its own subdirectory under `srcs/requirements/`.
+This repository is an Inception-style infrastructure project, primarily orchestrated via Docker Compose. It provisions multiple services (nginx, mariadb, wordpress, redis, ftp, adminer, portainer, static-site) using custom Dockerfiles and configuration scripts. The architecture is modular, with each service isolated in its own directory under `srcs/requirements/bonus/` or `srcs/requirements/`.
 
 ## Architecture & Service Boundaries
-- **Services:** Each service (e.g., `wordpress`, `nginx`, `mariadb`, etc.) has its own folder containing a `Dockerfile`, configuration files (`conf/`), and initialization scripts (`tools/`).
-- **Orchestration:** The root `srcs/docker-compose.yml` defines how containers are built and networked together.
-- **Data Flow:** WordPress connects to MariaDB for its database, Nginx serves as the web proxy, Redis is used for caching, FTP for file transfer, Adminer for DB management, and Portainer for container management.
+- **Services:** Each subdirectory in `srcs/requirements/bonus/` and `srcs/requirements/` represents a distinct service. Key services include:
+  - `nginx`: Reverse proxy, SSL termination (see `tools/ssl.sh`)
+  - `mariadb`: Database, initialized via `tools/maria-init.sh`
+  - `wordpress`: CMS, initialized via `tools/wp-init.sh`
+  - `redis`, `ftp`, `adminer`, `portainer`, `static-site`: Supporting services
+- **Configuration:** Service configs are in `conf/` subfolders. Initialization scripts are in `tools/`.
+- **Orchestration:** The root `srcs/docker-compose.yml` defines service composition, networks, and volumes.
 
 ## Developer Workflows
-- **Build & Launch:**
-  - Use `docker-compose up --build` from the `srcs/` directory to build and start all services.
-  - Use `docker-compose down` to stop and remove containers.
+- **Build & Deploy:**
+  - Use `docker-compose` commands from the `srcs/` directory to build and start all services:
+    ```sh
+    cd srcs
+    docker-compose up --build
+    ```
 - **Logs:**
-  - Run `printlogs.sh` from the project root to aggregate and display logs from all services.
+  - Use `printlogs.sh` at the project root to aggregate and display logs from all services.
 - **Service Initialization:**
-  - Each service's `tools/` directory contains scripts (e.g., `wp-init.sh`, `maria-init.sh`, `ssl.sh`) for setup and configuration. These are invoked during container startup.
+  - Each service may have a custom init script in its `tools/` folder (e.g., `ssl.sh` for nginx, `maria-init.sh` for mariadb).
+- **Configuration Changes:**
+  - Update config files in `conf/` and rebuild the affected service with `docker-compose build <service>`.
 
 ## Project-Specific Conventions
-- **Configuration:**
-  - All service configs are under `conf/` within each service directory. Custom settings (e.g., Nginx `default.conf`, MariaDB `my.cnf`) are provided.
-- **Initialization Scripts:**
-  - Scripts in `tools/` are used for first-time setup, credential generation, and service bootstrapping. They are typically run via Dockerfile `ENTRYPOINT` or `CMD`.
-- **Bonus Services:**
-  - The `bonus/` directory contains optional services (Adminer, FTP, Portainer, Redis) that can be enabled via Docker Compose.
-
-## Patterns & Examples
-- **Service Directory Structure:**
-  - Example: `srcs/requirements/wordpress/` contains `Dockerfile`, `conf/www.conf`, and `tools/wp-init.sh`.
+- **Directory Structure:**
+  - All service definitions, Dockerfiles, configs, and init scripts are under `srcs/requirements/` and `srcs/requirements/bonus/`.
 - **Custom Scripts:**
-  - Example: `srcs/requirements/nginx/tools/ssl.sh` generates SSL certificates for Nginx.
-- **Inter-Service Communication:**
-  - Environment variables and Docker Compose links are used for service discovery and credentials.
+  - Scripts in `tools/` are used for service setup and should be referenced in Dockerfiles or `docker-compose.yml`.
+- **No Central README:**
+  - Documentation is distributed; inspect service folders for details.
 
-## External Dependencies
-- **Docker & Docker Compose:** Required for all workflows.
-- **No direct Python/Node dependencies:** All logic is in shell scripts and Dockerfiles.
+## Integration Points & Dependencies
+- **External Dependencies:**
+  - Docker, Docker Compose
+- **Inter-Service Communication:**
+  - Defined in `docker-compose.yml` via networks and environment variables
+- **Volumes & Persistence:**
+  - Persistent data is managed via Docker volumes as defined in `docker-compose.yml`
+
+## Examples
+- To add a new service, create a new folder under `srcs/requirements/bonus/`, add a `Dockerfile`, `conf/`, and `tools/` as needed, then update `docker-compose.yml`.
+- To debug SSL issues, inspect and run `srcs/requirements/nginx/tools/ssl.sh`.
 
 ## Key Files & Directories
-- `srcs/docker-compose.yml`: Main orchestration file.
-- `srcs/requirements/*/Dockerfile`: Service build instructions.
-- `srcs/requirements/*/conf/`: Service configuration files.
-- `srcs/requirements/*/tools/`: Initialization and setup scripts.
-- `printlogs.sh`: Log aggregation utility.
-- `Makefile`: May contain shortcuts for common tasks (review for specifics).
-
-## AI Agent Guidance
-- When updating or adding services, follow the established directory structure and initialization patterns.
-- Always update `docker-compose.yml` when adding new services or changing inter-service dependencies.
-- Use existing scripts as templates for new service setup.
-- Validate changes by rebuilding and restarting containers.
+- `srcs/docker-compose.yml`: Main orchestration file
+- `srcs/requirements/*/Dockerfile`: Service build instructions
+- `srcs/requirements/*/conf/`: Service configuration
+- `srcs/requirements/*/tools/`: Service initialization scripts
+- `printlogs.sh`: Log aggregation script
+- `Makefile`: May contain shortcuts for common workflows (inspect for details)
 
 ---
 
-*If any section is unclear or missing important project-specific details, please provide feedback or point to relevant files for further refinement.*
+**For AI agents:**
+- Always check for service-specific scripts and configs before making changes.
+- When updating or adding services, ensure changes are reflected in `docker-compose.yml`.
+- Prefer using provided scripts for initialization and debugging.
+
+---
+
+*Please review and suggest additions or corrections for any unclear or missing sections.*
