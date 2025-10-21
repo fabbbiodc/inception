@@ -34,7 +34,6 @@ services:
       - "9000"
     networks:
       - inception-net
-      - redis-net
     env_file:
       - .env
     depends_on:
@@ -71,7 +70,7 @@ services:
     build: ./requirements/bonus/redis
     restart: always
     networks:
-      - redis-net
+      - inception-net
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -136,8 +135,6 @@ services:
 
 networks:
   inception-net:
-    driver: bridge
-  redis-net:
     driver: bridge
 
 volumes:
