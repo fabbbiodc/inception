@@ -129,8 +129,6 @@ services:
     volumes:
       - port_data:/data
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-        - PORTAINER_ADMIN_PASSWORD=${PORTAINER_ADMIN_PASSWORD}
     restart: always
     networks:
       - inception-net

@@ -12,4 +12,4 @@ RUN curl -L -o portainer.tar.gz "https://github.com/portainer/portainer/releases
 
 EXPOSE 8000 9443
 
-ENTRYPOINT [ "/app/portainer", "--admin-password=${PORTAINER_ADMIN_PASSWORD}" ]
+ENTRYPOINT [ "/app/portainer" ] 
