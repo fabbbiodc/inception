@@ -14,9 +14,14 @@ services:
     env_file:
       - .env
     depends_on:
-      - wordpress
-      - adminer
-      - portainer
+      wordpress:
+        condition: service_healthy
+      adminer:
+        condition: service_healthy
+      portainer:
+        condition: service_started
+      static_site:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "nc -z localhost 443 || exit 1"]
       interval: 10s
@@ -131,6 +136,19 @@ services:
     restart: always
     networks:
       - inception-net
+  
+  static_site:
+    container_name: static_site
+    build: ./requirements/bonus/static-site
+    networks:
+      - inception-net
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 8080 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 
 networks:
