@@ -53,19 +53,22 @@ else
     chown -R nobody:nobody $WEB_ROOT
 fi
 
-if wp plugin is-installed redis-cache --allow-root; then
-	echo "/// [Redis Cache already installed]"
-else
-	echo "/// [Installing Redis Cache]"
+echo "/// [Configuring Redis Cache]"
 
+wp config set WP_REDIS_HOST "redis" --allow-root
+wp config set WP_REDIS_PORT "6379" --allow-root
+wp config set WP_REDIS_PREFIX "inception_" --allow-root
+
+if ! wp plugin is-installed redis-cache --allow-root; then
+	echo "/// [Installing Redis Cache plugin]"
 	wp plugin install redis-cache --activate --allow-root
-
-	wp config set WP_REDIS_HOST "redis" --allow-root
-	wp config set WP_REDIS_PORT "6379" --allow-root
-	wp config set WP_REDIS_PREFIX "inception_" --allow-root
-
-	wp redis enable --allow-root
+else
+    echo "/// [Activating Redis Cache plugin]"
+    wp plugin activate redis-cache --allow-root
 fi
+
+wp redis enable --allow-root
+
 
 chown -R nobody:nobody $WEB_ROOT
 

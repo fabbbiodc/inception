@@ -73,6 +73,8 @@ services:
   redis:
     container_name: redis
     build: ./requirements/bonus/redis
+    volumes:
+      - redis_data:/data
     restart: always
     networks:
       - inception-net
@@ -174,3 +176,9 @@ volumes:
       type: 'none'
       o: 'bind'
       device: ${VOLUME_PATH}/port_data
+  redis_data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ${VOLUME_PATH}/redis_data
